@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         engineOn: false,
         hasMoved: false,
         isMotorcycle: true,
-        engineHealth: 1.0
+        engineHealth: 1.0,
+        storedHealthValue: 1.0,
+        storedFuelValue: 1.0
     };
 
     const manageLoopingAudio = (audioEl, shouldPlay) => {
@@ -135,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fuelIcon.classList.add('fuel-low');
         }
 
-        
+
     };
 
     // Function to change speedometer background color and opacity
@@ -294,6 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = Math.max(0, Math.min(1, val));
         const percentage = p * 100;
 
+        // Store the actual fuel value
+        vehicleState.storedFuelValue = p;
+
         // Update bar height
         els.fuel.style.transform = `translateY(${100 - percentage}%)`;
 
@@ -327,6 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = Math.max(0, Math.min(1, val));
         const percentage = p * 100;
 
+        // Store the actual health value
+        vehicleState.storedHealthValue = p;
         // Update engine health for icon effects
         vehicleState.engineHealth = p;
 
@@ -401,12 +408,16 @@ document.addEventListener('DOMContentLoaded', () => {
             window.setGear('N');
             manageLoopingAudio(els.audio.seatbeltWarning, false);
 
-            // Set bars to 0% when engine is off
-            window.setHealth(0);
-            window.setFuel(0);
+            // Update visual display only (keep stored values)
+            window.setHealth(vehicleState.storedHealthValue);
+            window.setFuel(vehicleState.storedFuelValue);
             window.setRPM(0);
         } else {
             window.setGear(0);
+
+            // Restore stored values when engine turns on
+            window.setHealth(vehicleState.storedHealthValue);
+            window.setFuel(vehicleState.storedFuelValue);
 
             if (vehicleState.isMotorcycle) {
                 manageLoopingAudio(els.audio.seatbeltWarning, false);
@@ -425,26 +436,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update speed color when engine state changes
         const currentSpeed = els.speed ? parseInt(els.speed.textContent) || 0 : 0;
         window.setSpeed(currentSpeed / 2.23694);
-
-        // Update health bar color when engine state changes
-        if (els.health) {
-            const currentHealthTransform = els.health.style.transform;
-            const match = currentHealthTransform.match(/translateY\((\d+)%\)/);
-            if (match) {
-                const currentPercentage = 100 - parseInt(match[1]);
-                window.setHealth(currentPercentage / 100);
-            }
-        }
-
-        // Update fuel bar color when engine state changes
-        if (els.fuel) {
-            const currentFuelTransform = els.fuel.style.transform;
-            const match = currentFuelTransform.match(/translateY\((\d+)%\)/);
-            if (match) {
-                const currentPercentage = 100 - parseInt(match[1]);
-                window.setFuel(currentPercentage / 100);
-            }
-        }
     };
 
     window.setHeadlights = (level) => {
@@ -508,8 +499,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIndicators();
     };
 
-    // Initialize bars to 0% since engine starts as off
-    window.setHealth(0);
-    window.setFuel(0);
+    // Initialize bars with default values since engine starts as off
+    vehicleState.storedHealthValue = 1.0;
+    vehicleState.storedFuelValue = 1.0;
+    window.setHealth(vehicleState.storedHealthValue);
+    window.setFuel(vehicleState.storedFuelValue);
     window.setRPM(0);
 });
