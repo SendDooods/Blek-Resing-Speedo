@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
         rpm: document.getElementById('rpm-boxes'),
         icons: {
             engine: document.getElementById('icon-engine'),
-            lights: document.getElementById('icon-lights'),
+            fuel: document.getElementById('icon-fuel'),
+            lowBeam: document.getElementById('icon-low-beam'),
+            highBeam: document.getElementById('icon-high-beam'),
             left: document.getElementById('icon-left'),
             right: document.getElementById('icon-right'),
             seatbelt: document.getElementById('icon-seatbelt')
@@ -159,6 +161,31 @@ document.addEventListener('DOMContentLoaded', () => {
             engineIcon.classList.add('engine-warning');
         }
         // Above 70%: normal state (no blinking)
+    };
+
+    const updateFuelIcon = (fuelPercentage) => {
+        const fuelIcon = els.icons.fuel;
+        if (!fuelIcon) return;
+
+        // Remove all fuel-specific classes
+        fuelIcon.classList.remove('fuel-high', 'fuel-medium', 'fuel-low');
+
+        if (!vehicleState.engineOn) {
+            // Engine off: greyed out
+            return;
+        }
+
+        // Engine on: show fuel level colors
+        if (fuelPercentage >= 50) {
+            // Green for 50% and above
+            fuelIcon.classList.add('fuel-high');
+        } else if (fuelPercentage >= 10) {
+            // Yellow for 10-49%
+            fuelIcon.classList.add('fuel-medium');
+        } else {
+            // Red blinking for 0-9%
+            fuelIcon.classList.add('fuel-low');
+        }
     };
 
     // Function to change speedometer background color and opacity
@@ -347,6 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
             root.style.setProperty('--fuel-color', '#ff0000');
             root.style.setProperty('--fuel-glow', 'rgba(255, 0, 0, 0.5)');
         }
+
+        // Update fuel icon based on fuel level and engine state
+        updateFuelIcon(percentage);
     };
 
     window.setHealth = (val) => {
@@ -474,11 +504,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.setHeadlights = (level) => {
-        const lights = els.icons.lights;
-        if (!lights) return;
-        lights.classList.remove('low-beam', 'high-beam');
-        if (level === 1) lights.classList.add('low-beam');
-        else if (level === 2) lights.classList.add('high-beam');
+        const lowBeam = els.icons.lowBeam;
+        const highBeam = els.icons.highBeam;
+        
+        if (!lowBeam || !highBeam) return;
+        
+        // Remove all classes first
+        lowBeam.classList.remove('active', 'hidden');
+        highBeam.classList.remove('active', 'hidden');
+        
+        if (level === 1) {
+            // Low beam active, hide high beam
+            lowBeam.classList.add('active');
+            highBeam.classList.add('hidden');
+        } else if (level === 2) {
+            // High beam active, hide low beam
+            highBeam.classList.add('active');
+            lowBeam.classList.add('hidden');
+        }
+        // level === 0: both icons stay inactive (greyed out)
     };
 
     const updateIndicators = () => {

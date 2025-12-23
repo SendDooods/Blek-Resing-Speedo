@@ -349,12 +349,48 @@ body {
     animation: blinkRed 1s infinite;
 }
 
-#icon-lights.low-beam {
-    color: #ffff00;
+#icon-low-beam {
+    width: 24px;
+    height: 24px;
+    opacity: 1.3;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    object-fit: contain;
+    object-position: center;
+    position: fixed;
+    bottom: 39px;
+    right: 201px;
 }
 
-#icon-lights.high-beam {
-    color: #ffffff;
+#icon-high-beam {
+    width: 24px;
+    height: 24px;
+    opacity: 0.3;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    object-fit: contain;
+    object-position: center;
+    position: fixed;
+    bottom: 39px;
+    right: 201px;
+}
+
+#icon-low-beam.active {
+    opacity: 1;
+    filter: grayscale(0%) sepia(100%) saturate(200%) hue-rotate(180deg);
+}
+
+#icon-high-beam.active {
+    opacity: 1;
+    filter: grayscale(0%) sepia(100%) saturate(200%) hue-rotate(200deg);
+}
+
+#icon-low-beam.hidden {
+    opacity: 0;
+}
+
+#icon-high-beam.hidden {
+    opacity: 0;
 }
 
 #icon-left.active,
@@ -400,6 +436,35 @@ body {
 
 #icon-seatbelt.active {
     color: #00ff41;
+}
+
+#icon-fuel {
+    width: 20px;
+    height: 20px;
+    opacity: 1.3;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    object-fit: contain;
+    object-position: center;
+    position: fixed;
+    bottom: 70px;
+    right: 154px;
+}
+
+#icon-fuel.fuel-high {
+    opacity: 1;
+    filter: grayscale(0%) sepia(100%) saturate(200%) hue-rotate(90deg);
+}
+
+#icon-fuel.fuel-medium {
+    opacity: 1;
+    filter: grayscale(0%) sepia(100%) saturate(200%) hue-rotate(40deg);
+}
+
+#icon-fuel.fuel-low {
+    opacity: 1;
+    filter: grayscale(0%) sepia(100%) saturate(200%) hue-rotate(0deg);
+    animation: blinkRed 1s infinite;
 }
 
 #icon-seatbelt {
