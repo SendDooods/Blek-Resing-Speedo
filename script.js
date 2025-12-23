@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.style.opacity = '1';
                 icon.classList.add('active');
             } else {
-                // Inactive: always 0.3 opacity (engine on or off)
+                // Inactive: same opacity regardless of engine state
                 icon.style.opacity = '0.3';
                 if (vehicleState.engineOn) {
                     image.setAttribute('filter', `url(#${id}FilterGrey)`);
@@ -93,6 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('active', !!state);
         }
     };
+
+
 
     // Function to refresh all icon states (call when entering vehicle)
     const refreshAllIcons = () => {
