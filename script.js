@@ -65,6 +65,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    const playStartupWarnings = () => {
+        const healthPercentage = vehicleState.engineHealth * 100;
+        const fuelPercentage = vehicleState.storedFuelValue * 100;
+        
+        let delay = 0;
+        
+        // Play engine warnings first
+        if (healthPercentage <= 50 && !vehicleState.hasPlayedWarn1) {
+            setTimeout(() => {
+                playOnceAudio(els.audio.engineWarn1);
+                vehicleState.hasPlayedWarn1 = true;
+            }, delay);
+            delay += 1500; // 1.5 second delay before next sound
+        }
+        
+        if (healthPercentage <= 20 && !vehicleState.hasPlayedWarn2) {
+            setTimeout(() => {
+                playOnceAudio(els.audio.engineWarn2);
+                vehicleState.hasPlayedWarn2 = true;
+            }, delay);
+            delay += 1500; // 1.5 second delay before next sound
+        }
+        
+        // Play fuel warnings after engine warnings
+        if (fuelPercentage <= 50 && !vehicleState.hasPlayedFuel50) {
+            setTimeout(() => {
+                playOnceAudio(els.audio.fuelWarn50);
+                vehicleState.hasPlayedFuel50 = true;
+            }, delay);
+            delay += 1500; // 1.5 second delay before next sound
+        }
+        
+        if (fuelPercentage <= 10 && !vehicleState.hasPlayedFuel10) {
+            setTimeout(() => {
+                playOnceAudio(els.audio.fuelWarn10);
+                vehicleState.hasPlayedFuel10 = true;
+            }, delay);
+        }
+    };
+
     const toggleIcon = (id, state) => {
         const icon = els.icons[id];
         if (!icon) return;
@@ -527,6 +567,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Update seatbelt icon and check if warning should play
                 window.setSeatbelts(vehicleState.seatbeltBuckled);
+            }
+
+            // Play startup warnings if seatbelt is buckled
+            if (vehicleState.seatbeltBuckled) {
+                playStartupWarnings();
             }
         }
 
