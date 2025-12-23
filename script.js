@@ -236,8 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
         window.setRPM = (rpm) => {
             const rpmValue = Math.round(Math.max(0, Math.min(1, rpm)) * 8000); // Scale to 0-8000 RPM
             const isActive = rpm > 0.1; // Active when RPM is above 10%
-            box.classList.toggle('on', isActive);
+            const isRedline = rpm > 0.8; // Red when RPM is above 80% (near gear change)
+            
+            // Remove all classes first
+            box.classList.remove('on', 'redline');
+            
             if (isActive) {
+                if (isRedline) {
+                    box.classList.add('redline');
+                } else {
+                    box.classList.add('on');
+                }
                 box.textContent = rpmValue.toString();
             } else {
                 box.textContent = '';

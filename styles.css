@@ -257,7 +257,7 @@ body {
 
 .rpm-box {
     width: 160px;
-    height: 10px;
+    height: 30px;
     background: rgba(255, 255, 255, 0);
     border: 2px solid rgba(255, 255, 255, 1);
     border-radius: 8px;
@@ -266,15 +266,22 @@ body {
     align-items: center;
     justify-content: center;
     font-family: 'New X Digital TFB', monospace;
-    font-size: 0.1rem;
-    color: rgba(255, 255, 255, 1);
+    font-size: 0;
+    color: transparent;
 }
 
 .rpm-box.on {
     background: #00ff41;
-    box-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0);
     border-color: #00ff41;
-    color: #000;
+    color: transparent;
+}
+
+.rpm-box.redline {
+    background: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    border-color: #ff0000;
+    color: transparent;
 }
 
 /* Status icons */
