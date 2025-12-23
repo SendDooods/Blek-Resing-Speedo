@@ -19,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         audio: {
             tick: document.getElementById('audio-tick'),
-            seatbeltWarning: document.getElementById('audio-seatbelt-warning')
+            seatbeltWarning: document.getElementById('audio-seatbelt-warning'),
+            alarm: document.getElementById('audio-alarm'),
+            engineWarn1: document.getElementById('audio-engine-warn1'),
+            engineWarn2: document.getElementById('audio-engine-warn2'),
+            fuelWarn50: document.getElementById('audio-fuel-50'),
+            fuelWarn10: document.getElementById('audio-fuel-10')
         }
     };
 
@@ -30,7 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
         engineHealth: 1.0,
         storedHealthValue: 1.0,
         storedFuelValue: 1.0,
-        seatbeltBuckled: false
+        seatbeltBuckled: false,
+        hasPlayedWarn1: false,
+        hasPlayedWarn2: false,
+        hasPlayedFuel50: false,
+        hasPlayedFuel10: false
     };
 
     const manageLoopingAudio = (audioEl, shouldPlay) => {
@@ -47,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 audioEl.currentTime = 0;
             }
         }
+    };
+
+    const playOnceAudio = (audioEl) => {
+        if (!audioEl) return;
+        audioEl.currentTime = 0;
+        audioEl.play().catch(e => console.log('Audio play failed:', e));
     };
 
 
@@ -130,6 +145,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Then set color based on health
         const healthPercentage = vehicleState.engineHealth * 100;
 
+        // Check for warning sounds (play once when crossing thresholds)
+        if (healthPercentage <= 50 && !vehicleState.hasPlayedWarn1) {
+            playOnceAudio(els.audio.engineWarn1);
+            vehicleState.hasPlayedWarn1 = true;
+        }
+
+        if (healthPercentage <= 20 && !vehicleState.hasPlayedWarn2) {
+            playOnceAudio(els.audio.engineWarn2);
+            vehicleState.hasPlayedWarn2 = true;
+        }
+
+        // Reset warning flags if health improves
+        if (healthPercentage > 50) {
+            vehicleState.hasPlayedWarn1 = false;
+        }
+        if (healthPercentage > 20) {
+            vehicleState.hasPlayedWarn2 = false;
+        }
+
         if (healthPercentage >= 50) {
             // Green for 50-100% health
             image.setAttribute('filter', 'url(#engineFilterGreen)');
@@ -160,6 +194,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Engine on: full opacity and show fuel level colors using SVG filters
         fuelIcon.style.opacity = '1';
+
+        // Check for fuel warning sounds (play once when crossing thresholds)
+        if (fuelPercentage <= 50 && !vehicleState.hasPlayedFuel50) {
+            playOnceAudio(els.audio.fuelWarn50);
+            vehicleState.hasPlayedFuel50 = true;
+        }
+
+        if (fuelPercentage <= 10 && !vehicleState.hasPlayedFuel10) {
+            playOnceAudio(els.audio.fuelWarn10);
+            vehicleState.hasPlayedFuel10 = true;
+        }
+
+        // Reset warning flags if fuel improves
+        if (fuelPercentage > 50) {
+            vehicleState.hasPlayedFuel50 = false;
+        }
+        if (fuelPercentage > 10) {
+            vehicleState.hasPlayedFuel10 = false;
+        }
+
         if (fuelPercentage >= 50) {
             // Green for 50-100%
             image.setAttribute('filter', 'url(#fuelFilterHigh)');
@@ -232,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (vehicleState.isMotorcycle) {
                 els.icons.seatbelt.style.display = 'none';
                 manageLoopingAudio(els.audio.seatbeltWarning, false); // Disable seatbelt warning for motorcycles
+                manageLoopingAudio(els.audio.alarm, false); // Disable alarm for motorcycles
             } else {
                 els.icons.seatbelt.style.display = '';
             }
@@ -434,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const shouldPlaySeatbeltWarning = !isWearingBelt && vehicleState.engineOn;
         manageLoopingAudio(els.audio.seatbeltWarning, shouldPlaySeatbeltWarning);
+        manageLoopingAudio(els.audio.alarm, shouldPlaySeatbeltWarning);
     };
 
     window.setEngine = (on) => {
@@ -446,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vehicleState.hasMoved = false;
             window.setGear('N');
             manageLoopingAudio(els.audio.seatbeltWarning, false);
+            manageLoopingAudio(els.audio.alarm, false);
 
             // Update visual display only (keep stored values)
             window.setHealth(vehicleState.storedHealthValue);
@@ -460,6 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (vehicleState.isMotorcycle) {
                 manageLoopingAudio(els.audio.seatbeltWarning, false);
+                manageLoopingAudio(els.audio.alarm, false);
             } else {
                 // Update seatbelt icon and check if warning should play
                 window.setSeatbelts(vehicleState.seatbeltBuckled);
