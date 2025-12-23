@@ -58,10 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!image) return;
 
         if (id === 'left' || id === 'right') {
+            // Always full opacity when engine is on
+            icon.style.opacity = vehicleState.engineOn ? '1' : '0.3';
+            
             if (state) {
                 // Active: orange color
                 image.setAttribute('filter', `url(#${id}FilterActive)`);
-                icon.style.opacity = '1';
                 icon.classList.add('active');
             } else {
                 // Inactive: grey when engine on, original when engine off
@@ -70,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     image.setAttribute('filter', 'none');
                 }
-                icon.style.opacity = '1';
                 icon.classList.remove('active');
             }
         } else {
@@ -89,13 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
         engineIcon.classList.remove('engine-warning', 'engine-critical');
 
         if (!vehicleState.engineOn) {
-            // Engine off: greyed out
+            // Engine off: greyed out with reduced opacity
             image.setAttribute('filter', 'url(#engineFilterGrey)');
-            engineIcon.style.opacity = '1';
+            engineIcon.style.opacity = '0.3';
             return;
         }
 
-        // Engine on: color based on health
+        // Engine on: full opacity and color based on health
+        engineIcon.style.opacity = '1';
         const healthPercentage = vehicleState.engineHealth * 100;
 
         if (healthPercentage >= 50) {
@@ -120,13 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fuelIcon.classList.remove('fuel-high', 'fuel-medium', 'fuel-low');
 
         if (!vehicleState.engineOn) {
-            // Engine off: greyed out
+            // Engine off: greyed out with reduced opacity
             image.setAttribute('filter', 'url(#fuelFilterGrey)');
-            fuelIcon.style.opacity = '1';
+            fuelIcon.style.opacity = '0.3';
             return;
         }
 
-        // Engine on: show fuel level colors using SVG filters
+        // Engine on: full opacity and show fuel level colors using SVG filters
+        fuelIcon.style.opacity = '1';
         if (fuelPercentage >= 50) {
             // Green for 50-100%
             image.setAttribute('filter', 'url(#fuelFilterHigh)');
@@ -381,18 +384,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 seatbeltIcon.classList.remove('active', 'seatbelt-warning');
 
                 if (!vehicleState.engineOn) {
-                    // Engine off: grey
+                    // Engine off: grey with reduced opacity
                     image.setAttribute('filter', 'url(#seatbeltFilterGrey)');
-                    seatbeltIcon.style.opacity = '1';
-                } else if (isWearingBelt) {
-                    // Buckled: green
-                    image.setAttribute('filter', 'url(#seatbeltFilterActive)');
-                    seatbeltIcon.style.opacity = '1';
+                    seatbeltIcon.style.opacity = '0.3';
                 } else {
-                    // Not buckled: red flashing
-                    image.setAttribute('filter', 'url(#seatbeltFilterWarning)');
+                    // Engine on: full opacity
                     seatbeltIcon.style.opacity = '1';
-                    seatbeltIcon.classList.add('seatbelt-warning');
+                    if (isWearingBelt) {
+                        // Buckled: green
+                        image.setAttribute('filter', 'url(#seatbeltFilterActive)');
+                    } else {
+                        // Not buckled: red flashing
+                        image.setAttribute('filter', 'url(#seatbeltFilterWarning)');
+                        seatbeltIcon.classList.add('seatbelt-warning');
+                    }
                 }
             }
         }
@@ -459,15 +464,24 @@ document.addEventListener('DOMContentLoaded', () => {
         lowBeam.classList.remove('active', 'hidden');
         highBeam.classList.remove('active', 'hidden');
 
-        if (level === 1) {
+        if (!vehicleState.engineOn) {
+            // Engine off: reduced opacity
+            lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
+            highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
+            lowBeam.style.opacity = '0.3';
+            highBeam.style.opacity = '0.3';
+        } else if (level === 1) {
+            // Low beam active: full opacity
             lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterActive)');
             lowBeam.style.opacity = '1';
             highBeam.style.opacity = '0';
         } else if (level === 2) {
+            // High beam active: full opacity
             highBeamImage.setAttribute('filter', 'url(#highBeamFilterActive)');
             highBeam.style.opacity = '1';
             lowBeam.style.opacity = '0';
         } else {
+            // Engine on but lights off: full opacity but grey
             lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
             highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
             lowBeam.style.opacity = '1';
