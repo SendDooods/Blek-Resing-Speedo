@@ -2,7 +2,7 @@
 
 :root {
     --speedo-bg-color: 0, 0, 0;
-    --speedo-bg-opacity: 0;
+    --speedo-bg-opacity: 1;
     --speed-color: #ffffff;
     --speed-glow: rgba(255, 255, 255, 1);
     --health-color: #00ff00;
@@ -297,11 +297,21 @@ body {
 /* Status icons */
 .status-icons {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    bottom: 34px;
+    right: 151px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    resize: both;
+    overflow: auto;
+    min-width: 125px;
+    min-height: 61px;
+    max-width: 300px;
+    max-height: 500px;
 }
 
 .icon {
@@ -320,10 +330,9 @@ body {
 }
 
 #icon-engine {
-    width: 24px;
-    height: 24px;
+    width: 20;
+    height: 20;
     opacity: 0.1;
-    filter: grayscale(100%);
     transition: all 0.3s ease;
     cursor: move;
     user-select: none;
@@ -350,10 +359,9 @@ body {
 }
 
 #icon-low-beam {
-    width: 24px;
-    height: 24px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    width: 20;
+    height: 20;
+    opacity: 1;
     transition: all 0.3s ease;
     object-fit: contain;
     object-position: center;
@@ -363,10 +371,9 @@ body {
 }
 
 #icon-high-beam {
-    width: 24px;
-    height: 24px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    width: 20;
+    height: 20;
+    opacity: 1;
     transition: all 0.3s ease;
     object-fit: contain;
     object-position: center;
@@ -403,10 +410,9 @@ body {
 }
 
 #icon-left {
-    width: 24px;
-    height: 24px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    width: 20;
+    height: 20;
+    opacity: 1;
     transition: all 0.3s ease;
     object-fit: contain;
     object-position: center;
@@ -416,10 +422,9 @@ body {
 }
 
 #icon-right {
-    width: 24px;
-    height: 24px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    width: 20;
+    height: 20;
+    opacity: 1;
     transition: all 0.3s ease;
     object-fit: contain;
     object-position: center;
@@ -449,8 +454,7 @@ body {
 #icon-fuel {
     width: 20px;
     height: 20px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    opacity: 1;
     transition: all 0.3s ease;
     object-fit: contain;
     object-position: center;
@@ -484,8 +488,7 @@ body {
 #icon-seatbelt {
     width: 20px;
     height: 20px;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    opacity: 1;
     transition: all 0.3s ease;
     position: fixed;
     bottom: 40px;
