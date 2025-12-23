@@ -467,9 +467,6 @@ body {
 
 #icon-seatbelt.active {
     opacity: 1;
-    filter: brightness(1.2) contrast(1.1);
-    background: rgba(0, 255, 100, 0.4);
-    background-blend-mode: overlay;
 }
 
 #icon-seatbelt.seatbelt-warning {

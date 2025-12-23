@@ -418,8 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     image.setAttribute('filter', 'url(#seatbeltFilterGrey)');
                     seatbeltIcon.style.opacity = '0.3';
                 } else {
-                    // Engine on: full opacity
-                    seatbeltIcon.style.opacity = '1';
+                    // Engine on: full opacity (force override any CSS animations)
+                    seatbeltIcon.style.setProperty('opacity', '1', 'important');
                     if (isWearingBelt) {
                         // Buckled: green
                         image.setAttribute('filter', 'url(#seatbeltFilterActive)');
