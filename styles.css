@@ -449,25 +449,7 @@ body {
     right: 154px;
 }
 
-#icon-fuel.fuel-high {
-    opacity: 1;
-    filter: brightness(1.2) contrast(1.1);
-    background: rgba(0, 255, 0, 0.3);
-    background-blend-mode: overlay;
-}
-
-#icon-fuel.fuel-medium {
-    opacity: 1;
-    filter: brightness(1.2) contrast(1.1);
-    background: rgba(255, 255, 0, 0.4);
-    background-blend-mode: overlay;
-}
-
 #icon-fuel.fuel-low {
-    opacity: 1;
-    filter: brightness(1.2) contrast(1.1);
-    background: rgba(255, 0, 0, 0.4);
-    background-blend-mode: overlay;
     animation: blinkRed 1s infinite;
 }
 

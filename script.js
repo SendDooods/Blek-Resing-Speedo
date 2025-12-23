@@ -109,24 +109,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateFuelIcon = (fuelPercentage) => {
         const fuelIcon = els.icons.fuel;
         if (!fuelIcon) return;
+        const image = fuelIcon.querySelector('image');
+        if (!image) return;
 
         // Remove all fuel-specific classes
         fuelIcon.classList.remove('fuel-high', 'fuel-medium', 'fuel-low');
 
         if (!vehicleState.engineOn) {
             // Engine off: greyed out
+            image.setAttribute('filter', 'url(#fuelFilterGrey)');
+            fuelIcon.style.opacity = '1';
             return;
         }
 
-        // Engine on: show fuel level colors
+        // Engine on: show fuel level colors using SVG filters
         if (fuelPercentage >= 50) {
             // Green for 50% and above
-            fuelIcon.classList.add('fuel-high');
+            image.setAttribute('filter', 'url(#fuelFilterHigh)');
         } else if (fuelPercentage >= 10) {
             // Yellow for 10-49%
-            fuelIcon.classList.add('fuel-medium');
+            image.setAttribute('filter', 'url(#fuelFilterMedium)');
         } else {
             // Red blinking for 0-9%
+            image.setAttribute('filter', 'url(#fuelFilterLow)');
             fuelIcon.classList.add('fuel-low');
         }
 
