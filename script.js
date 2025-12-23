@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 image.setAttribute('filter', `url(#${id}FilterGrey)`);
                 icon.classList.remove('active');
             }
-                icon.style.opacity = '1';
+            icon.style.opacity = '1';
         } else {
             // For other icons, use the old method
             icon.classList.toggle('active', !!state);
@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
         engineIcon.classList.remove('engine-warning', 'engine-critical');
 
         if (!vehicleState.engineOn) {
-            // Engine off: full opacity with original colors
-            image.setAttribute('filter', 'none');
+            // Engine off: greyed out
+            image.setAttribute('filter', 'url(#engineFilterGrey)');
             engineIcon.style.opacity = '1';
             return;
         }
@@ -77,11 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
         engineIcon.style.opacity = '1';
         const healthPercentage = vehicleState.engineHealth * 100;
 
-        if (healthPercentage >= 75) {
-            // Green for 75% and above (healthy)
+        if (healthPercentage >= 50) {
+            // Green for 50% and above (healthy)
             image.setAttribute('filter', 'url(#engineFilterGreen)');
         } else if (healthPercentage >= 20) {
-            // Yellow for 20-74% (warning)
+            // Orange for 20-49% (warning) - using yellow filter for orange
             image.setAttribute('filter', 'url(#engineFilterYellow)');
             if (healthPercentage <= 40) {
                 // Add blinking for critical levels
@@ -107,8 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
         fuelIcon.classList.remove('fuel-high', 'fuel-medium', 'fuel-low');
 
         if (!vehicleState.engineOn) {
-            // Engine off: full opacity with original colors
-            image.setAttribute('filter', 'none');
+            // Engine off: greyed out
+            image.setAttribute('filter', 'url(#fuelFilterGrey)');
             fuelIcon.style.opacity = '1';
             return;
         }
@@ -479,9 +479,9 @@ document.addEventListener('DOMContentLoaded', () => {
             highBeam.style.opacity = '1';
             lowBeam.style.opacity = '0';
         } else {
-            // Both inactive (full opacity with original colors)
-            lowBeamImage.setAttribute('filter', 'none');
-            highBeamImage.setAttribute('filter', 'none');
+            // Both inactive (greyed out)
+            lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
+            highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
             lowBeam.style.opacity = '1';
             highBeam.style.opacity = '1';
         }
