@@ -511,6 +511,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             window.setGear(0);
 
+            // Reset warning flags when engine turns on so warnings can play again
+            vehicleState.hasPlayedWarn1 = false;
+            vehicleState.hasPlayedWarn2 = false;
+            vehicleState.hasPlayedFuel50 = false;
+            vehicleState.hasPlayedFuel10 = false;
+
             // Restore stored values when engine turns on
             window.setHealth(vehicleState.storedHealthValue);
             window.setFuel(vehicleState.storedFuelValue);
