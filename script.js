@@ -58,15 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!image) return;
 
         if (id === 'left' || id === 'right') {
-            // Always full opacity when engine is on
-            icon.style.opacity = vehicleState.engineOn ? '1' : '0.3';
-            
             if (state) {
-                // Active: orange color
+                // Active: orange color, full opacity
                 image.setAttribute('filter', `url(#${id}FilterActive)`);
+                icon.style.opacity = '1';
                 icon.classList.add('active');
             } else {
-                // Inactive: grey when engine on, original when engine off
+                // Inactive: always 0.3 opacity (engine on or off)
+                icon.style.opacity = '0.3';
                 if (vehicleState.engineOn) {
                     image.setAttribute('filter', `url(#${id}FilterGrey)`);
                 } else {
@@ -79,6 +78,35 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('active', !!state);
         }
     };
+
+    // Function to refresh all icon states (call when entering vehicle)
+    const refreshAllIcons = () => {
+        // Update engine icon
+        updateEngineIcon();
+
+        // Update fuel icon
+        const currentFuelTransform = els.fuel ? els.fuel.style.transform : '';
+        const fuelMatch = currentFuelTransform.match(/translateY\((\d+)%\)/);
+        if (fuelMatch) {
+            const currentFuelPercentage = 100 - parseInt(fuelMatch[1]);
+            updateFuelIcon(currentFuelPercentage);
+        }
+
+        // Update seatbelt icon
+        window.setSeatbelts(vehicleState.seatbeltBuckled);
+
+        // Update indicator icons
+        const leftActive = els.icons.left && els.icons.left.classList.contains('active');
+        const rightActive = els.icons.right && els.icons.right.classList.contains('active');
+        toggleIcon('left', leftActive);
+        toggleIcon('right', rightActive);
+
+        // Update headlights (assume off if not specified)
+        window.setHeadlights(0);
+    };
+
+    // Make refreshAllIcons available globally
+    window.refreshAllIcons = refreshAllIcons;
 
     const updateEngineIcon = () => {
         const engineIcon = els.icons.engine;
@@ -96,8 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Engine on: full opacity and color based on health
+        // Engine on: ALWAYS set full opacity first
         engineIcon.style.opacity = '1';
+
+        // Then set color based on health
         const healthPercentage = vehicleState.engineHealth * 100;
 
         if (healthPercentage >= 50) {
@@ -395,7 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         image.setAttribute('filter', 'url(#seatbeltFilterActive)');
                     } else {
                         // Not buckled: red flashing
-                        seatbeltIcon.style.opacity = '1';
                         image.setAttribute('filter', 'url(#seatbeltFilterWarning)');
                         seatbeltIcon.classList.add('seatbelt-warning');
                     }
@@ -465,13 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lowBeam.classList.remove('active', 'hidden');
         highBeam.classList.remove('active', 'hidden');
 
-        if (!vehicleState.engineOn) {
-            // Engine off: reduced opacity
-            lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
-            highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
-            lowBeam.style.opacity = '0.3';
-            highBeam.style.opacity = '0.3';
-        } else if (level === 1) {
+        if (level === 1) {
             // Low beam active: full opacity
             lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterActive)');
             lowBeam.style.opacity = '1';
@@ -482,11 +505,11 @@ document.addEventListener('DOMContentLoaded', () => {
             highBeam.style.opacity = '1';
             lowBeam.style.opacity = '0';
         } else {
-            // Engine on but lights off: full opacity but grey
+            // Lights off: always 0.3 opacity (engine on or off)
             lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
             highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
-            lowBeam.style.opacity = '1';
-            highBeam.style.opacity = '1';
+            lowBeam.style.opacity = '0.3';
+            highBeam.style.opacity = '0.3';
         }
     };
 
