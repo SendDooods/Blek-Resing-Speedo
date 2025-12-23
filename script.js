@@ -499,10 +499,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIndicators();
     };
 
-    // Initialize bars with default values since engine starts as off
+    // Initialize bars with default values
     vehicleState.storedHealthValue = 1.0;
     vehicleState.storedFuelValue = 1.0;
-    window.setHealth(vehicleState.storedHealthValue);
-    window.setFuel(vehicleState.storedFuelValue);
+
+    // Set initial bar heights (they'll be transparent since engine is off)
+    if (els.health) {
+        els.health.style.transform = `translateY(0%)`; // 100% height
+    }
+    if (els.fuel) {
+        els.fuel.style.transform = `translateY(0%)`; // 100% height
+    }
+
     window.setRPM(0);
 });
