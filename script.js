@@ -412,6 +412,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             window.setGear(0);
 
+            // Set default health when engine turns on
+            window.setHealth(1.0); // 100% health
+            window.setFuel(1.0); // 100% fuel
+
             // If motorcycle, ensure alarm doesn't sound
             if (vehicleState.isMotorcycle) {
                 manageLoopingAudio(els.audio.alarm, false);
@@ -518,8 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIndicators();
     };
 
-    // Initialize bars to 0% since engine starts as off
-    window.setHealth(0);
-    window.setFuel(0);
+    // Initialize bars to default values since engine starts as off
+    window.setHealth(1.0); // Start with 100% health
+    window.setFuel(1.0); // Start with 100% fuel
     window.setRPM(0);
 });
