@@ -89,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Engine on: color based on health
-        engineIcon.style.opacity = '1';
         const healthPercentage = vehicleState.engineHealth * 100;
 
         if (healthPercentage === 100) {
@@ -130,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Red blinking for 0-9%
             fuelIcon.classList.add('fuel-low');
         }
+        engineIcon.style.opacity = '1';
     };
 
     // Function to change speedometer background color and opacity
