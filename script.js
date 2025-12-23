@@ -79,13 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.style.opacity = '1';
                 icon.classList.add('active');
             } else {
-                // Inactive: same opacity regardless of engine state
+                // Inactive: always 0.3 opacity regardless of engine state
                 icon.style.opacity = '0.3';
-                if (vehicleState.engineOn) {
-                    image.setAttribute('filter', `url(#${id}FilterGrey)`);
-                } else {
-                    image.setAttribute('filter', 'none');
-                }
+                image.setAttribute('filter', `url(#${id}FilterGrey)`);
                 icon.classList.remove('active');
             }
         } else {
