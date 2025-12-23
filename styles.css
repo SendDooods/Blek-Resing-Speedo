@@ -337,7 +337,7 @@ body {
 
 #icon-engine.active {
     opacity: 1;
-    filter: grayscale(0%) brightness(1.5) saturate(1.8);
+    filter: grayscale(0%) brightness(1.1) saturate(1.2);
     text-shadow: none;
 }
 
@@ -377,12 +377,12 @@ body {
 
 #icon-low-beam.active {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(180deg) brightness(1.4);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(200deg) brightness(1.4);
 }
 
 #icon-high-beam.active {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(200deg) brightness(1.4);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(220deg) brightness(1.4);
 }
 
 #icon-low-beam.hidden {
@@ -426,12 +426,12 @@ body {
 
 #icon-left.active {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(30deg) brightness(1.3);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(45deg) brightness(1.3);
 }
 
 #icon-right.active {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(30deg) brightness(1.3);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(45deg) brightness(1.3);
 }
 
 #icon-seatbelt.active {
@@ -453,12 +453,12 @@ body {
 
 #icon-fuel.fuel-high {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(90deg) brightness(1.3);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(120deg) brightness(1.3);
 }
 
 #icon-fuel.fuel-medium {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(40deg) brightness(1.3);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(60deg) brightness(1.3);
 }
 
 #icon-fuel.fuel-low {
@@ -483,7 +483,7 @@ body {
 
 #icon-seatbelt.active {
     opacity: 1;
-    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(90deg) brightness(1.3);
+    filter: grayscale(0%) sepia(100%) saturate(300%) hue-rotate(120deg) brightness(1.3);
 }
 
 #icon-seatbelt.seatbelt-warning {
