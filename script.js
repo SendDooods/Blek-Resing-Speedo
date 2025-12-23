@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         isMotorcycle: true,
         engineHealth: 1.0,
         storedHealthValue: 1.0,
-        storedFuelValue: 1.0
+        storedFuelValue: 1.0,
+        seatbeltBuckled: false
     };
 
     const manageLoopingAudio = (audioEl, shouldPlay) => {
@@ -371,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const isWearingBelt = !!isBuckled;
+        vehicleState.seatbeltBuckled = isWearingBelt; // Store seatbelt state
         const seatbeltIcon = els.icons.seatbelt;
 
         if (seatbeltIcon) {
@@ -379,12 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 seatbeltIcon.classList.remove('active', 'seatbelt-warning');
 
                 if (!vehicleState.engineOn) {
-                    image.setAttribute('filter', 'none');
+                    // Engine off: grey
+                    image.setAttribute('filter', 'url(#seatbeltFilterGrey)');
                     seatbeltIcon.style.opacity = '1';
                 } else if (isWearingBelt) {
+                    // Buckled: green
                     image.setAttribute('filter', 'url(#seatbeltFilterActive)');
                     seatbeltIcon.style.opacity = '1';
                 } else {
+                    // Not buckled: red flashing
                     image.setAttribute('filter', 'url(#seatbeltFilterWarning)');
                     seatbeltIcon.style.opacity = '1';
                     seatbeltIcon.classList.add('seatbelt-warning');
@@ -421,11 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (vehicleState.isMotorcycle) {
                 manageLoopingAudio(els.audio.seatbeltWarning, false);
             } else {
-                const isSeatbeltIconActive =
-                    els.icons.seatbelt && els.icons.seatbelt.classList.contains('active');
-                if (!isSeatbeltIconActive) {
-                    manageLoopingAudio(els.audio.seatbeltWarning, true);
-                }
+                // Update seatbelt icon and check if warning should play
+                window.setSeatbelts(vehicleState.seatbeltBuckled);
             }
         }
 
