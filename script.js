@@ -21,10 +21,104 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Make health label draggable
+    const healthLabel = document.getElementById('health-label');
+    if (healthLabel) {
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        healthLabel.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = healthLabel.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            healthLabel.style.position = 'fixed';
+            healthLabel.style.zIndex = '1000';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            healthLabel.style.left = (initialX + deltaX) + 'px';
+            healthLabel.style.top = (initialY + deltaY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
+
+    // Make fuel label draggable
+    const fuelLabel = document.getElementById('fuel-label');
+    if (fuelLabel) {
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        fuelLabel.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = fuelLabel.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            fuelLabel.style.position = 'fixed';
+            fuelLabel.style.zIndex = '1000';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            fuelLabel.style.left = (initialX + deltaX) + 'px';
+            fuelLabel.style.top = (initialY + deltaY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
+
+    // Make engine icon draggable
+    const engineIcon = document.getElementById('icon-engine');
+    if (engineIcon) {
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        engineIcon.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = engineIcon.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            engineIcon.style.position = 'fixed';
+            engineIcon.style.zIndex = '1000';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            engineIcon.style.left = (initialX + deltaX) + 'px';
+            engineIcon.style.top = (initialY + deltaY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
+
     const vehicleState = {
         engineOn: false,
         hasMoved: false,
-        isMotorcycle: true
+        isMotorcycle: true,
+        engineHealth: 1.0
     };
 
     const manageLoopingAudio = (audioEl, shouldPlay) => {
@@ -36,6 +130,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (els.icons[id]) {
             els.icons[id].classList.toggle('active', !!state);
         }
+    };
+
+    const updateEngineIcon = () => {
+        const engineIcon = els.icons.engine;
+        if (!engineIcon) return;
+
+        // Remove all engine-specific classes
+        engineIcon.classList.remove('engine-warning', 'engine-critical');
+
+        if (!vehicleState.engineOn) {
+            // Engine off: 10% opacity, greyed out
+            engineIcon.classList.remove('active');
+            return;
+        }
+
+        // Engine on: 50% opacity
+        engineIcon.classList.add('active');
+
+        // Check health levels for blinking
+        const healthPercentage = vehicleState.engineHealth * 100;
+        
+        if (healthPercentage <= 40) {
+            // Critical health: blink red
+            engineIcon.classList.add('engine-critical');
+        } else if (healthPercentage <= 70) {
+            // Warning health: blink yellow
+            engineIcon.classList.add('engine-warning');
+        }
+        // Above 70%: normal state (no blinking)
     };
 
     // Function to change speedometer background color and opacity
@@ -103,17 +226,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // RPM boxes
+    // RPM box
     if (els.rpm) {
-        for (let i = 0; i < 10; i++) {
-            const box = document.createElement('div');
-            box.className = 'rpm-box';
-            els.rpm.appendChild(box);
-        }
-        const rpmBoxes = Array.from(els.rpm.children);
+        const box = document.createElement('div');
+        box.className = 'rpm-box';
+        box.textContent = '';
+        els.rpm.appendChild(box);
+
         window.setRPM = (rpm) => {
-            const active = Math.round(Math.max(0, Math.min(1, rpm)) * 10);
-            rpmBoxes.forEach((box, i) => box.classList.toggle('on', i < active));
+            const rpmValue = Math.round(Math.max(0, Math.min(1, rpm)) * 8000); // Scale to 0-8000 RPM
+            const isActive = rpm > 0.1; // Active when RPM is above 10%
+            box.classList.toggle('on', isActive);
+            if (isActive) {
+                box.textContent = rpmValue.toString();
+            } else {
+                box.textContent = '';
+            }
         };
     } else {
         window.setRPM = () => { };
@@ -179,12 +307,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update bar height
         els.fuel.style.transform = `translateY(${100 - percentage}%)`;
 
-        // Update percentage text
-        if (els.fuelPercent) els.fuelPercent.textContent = Math.round(percentage) + '%';
+        // Update percentage text (removed since we don't show percentage anymore)
+        // if (els.fuelPercent) els.fuelPercent.textContent = Math.round(percentage) + '%';
 
-        // Update colors based on fuel percentage
+        // Update colors based on fuel percentage and engine state
         const root = document.documentElement;
-        if (percentage >= 60) {
+        
+        if (!vehicleState.engineOn) {
+            // Engine off = transparent
+            root.style.setProperty('--fuel-color', 'transparent');
+            root.style.setProperty('--fuel-glow', 'rgba(0, 0, 0, 0)');
+        } else if (percentage >= 60) {
             // Green for 60% and above
             root.style.setProperty('--fuel-color', '#44ff44');
             root.style.setProperty('--fuel-glow', 'rgba(68, 255, 68, 0.5)');
@@ -204,15 +337,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = Math.max(0, Math.min(1, val));
         const percentage = p * 100;
 
+        // Update engine health for icon effects
+        vehicleState.engineHealth = p;
+
         // Update bar height
         els.health.style.transform = `translateY(${100 - percentage}%)`;
 
         // Update percentage text
         if (els.healthPercent) els.healthPercent.textContent = Math.round(percentage) + '%';
 
-        // Update colors based on health percentage
+        // Update colors based on health percentage and engine state
         const root = document.documentElement;
-        if (percentage >= 60) {
+        
+        if (!vehicleState.engineOn) {
+            // Engine off = transparent
+            root.style.setProperty('--health-color', 'transparent');
+            root.style.setProperty('--health-glow', 'rgba(0, 0, 0, 0)');
+        } else if (percentage >= 60) {
             // Green for 60% and above
             root.style.setProperty('--health-color', '#00ff00');
             root.style.setProperty('--health-glow', 'rgba(0, 255, 0, 0.5)');
@@ -225,6 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
             root.style.setProperty('--health-color', '#ff0000');
             root.style.setProperty('--health-glow', 'rgba(255, 0, 0, 0.5)');
         }
+
+        // Update engine icon based on health
+        updateEngineIcon();
     };
 
     window.setSeatbelts = (isBuckled) => {
@@ -234,7 +378,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const isWearingBelt = !!isBuckled;
-        toggleIcon('seatbelt', isWearingBelt);
+        const seatbeltIcon = els.icons.seatbelt;
+        
+        if (seatbeltIcon) {
+            // Remove all seatbelt classes
+            seatbeltIcon.classList.remove('active', 'seatbelt-warning');
+            
+            if (isWearingBelt) {
+                // Buckled: green, no flashing
+                seatbeltIcon.classList.add('active');
+            } else {
+                // Not buckled: flashing red
+                seatbeltIcon.classList.add('seatbelt-warning');
+            }
+        }
 
         const shouldPlayAlarm = !isWearingBelt && vehicleState.engineOn;
         manageLoopingAudio(els.audio.alarm, shouldPlayAlarm);
@@ -245,12 +402,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (vehicleState.engineOn === newState) return;
 
         vehicleState.engineOn = newState;
-        toggleIcon('engine', vehicleState.engineOn);
-
+        
         if (!newState) {
             vehicleState.hasMoved = false;
             window.setGear('N');
             manageLoopingAudio(els.audio.alarm, false);
+            
+            // Set bars to 0% when engine is off
+            window.setHealth(0);
+            window.setFuel(0);
         } else {
             window.setGear(0);
 
@@ -267,9 +427,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Update engine icon
+        updateEngineIcon();
+
         // Update speed color when engine state changes
         const currentSpeed = els.speed ? parseInt(els.speed.textContent) || 0 : 0;
         window.setSpeed(currentSpeed / 2.23694); // Convert back to original units for color update
+        
+        // Update health bar color when engine state changes
+        if (els.health) {
+            const currentHealthTransform = els.health.style.transform;
+            const match = currentHealthTransform.match(/translateY\((\d+)%\)/);
+            if (match) {
+                const currentPercentage = 100 - parseInt(match[1]);
+                window.setHealth(currentPercentage / 100);
+            }
+        }
+        
+        // Update fuel bar color when engine state changes
+        if (els.fuel) {
+            const currentFuelTransform = els.fuel.style.transform;
+            const match = currentFuelTransform.match(/translateY\((\d+)%\)/);
+            if (match) {
+                const currentPercentage = 100 - parseInt(match[1]);
+                window.setFuel(currentPercentage / 100);
+            }
+        }
     };
 
     window.setHeadlights = (level) => {
@@ -310,4 +493,8 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleIcon('right', on);
         updateIndicators();
     };
+
+    // Initialize bars to 0% since engine starts as off
+    window.setHealth(0);
+    window.setFuel(0);
 });

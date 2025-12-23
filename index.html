@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Display</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.cdnfonts.com/css/new-x-digital-tfb" rel="stylesheet">
+</head>
+<body>
+    <div class="speedo-root">
+        <!-- Left side bars -->
+        <div class="left-bars">
+            <div class="bar-container">
+                <div class="bar-label" id="health-label">H</div>
+                <div class="bar-wrapper">
+                    <div class="bar-fill" id="health-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side bars -->
+        <div class="right-bars">
+            <div class="bar-container">
+                <div class="bar-label" id="fuel-label">F</div>
+                <div class="bar-wrapper">
+                    <div class="bar-fill" id="fuel-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Speed display positioned at bottom left -->
+        <div class="speed-container">
+            <div class="speed-display" id="speed-display">0</div>
+            <div class="speed-unit" id="speed-unit">MPH</div>
+            <div class="gear-display" id="gear-display">N</div>
+        </div>
+
+        <!-- RPM boxes -->
+        <div class="rpm-container">
+            <div class="rpm-boxes" id="rpm-boxes"></div>
+        </div>
+
+        <!-- Status icons -->
+        <div class="status-icons">
+            <img src="texture/engine.png" class="icon" id="icon-engine" alt="Engine">
+            <div class="icon" id="icon-lights">💡</div>
+            <img src="texture/left.png" class="icon" id="icon-left" alt="Left Turn">
+            <img src="texture/right.png" class="icon" id="icon-right" alt="Right Turn">
+            <img src="texture/seatbelt.png" class="icon" id="icon-seatbelt" alt="Seatbelt">
+        </div>
+    </div>
+
+    <!-- Audio elements (disabled in script) -->
+    <audio id="audio-tick" loop>
+        <source src="tick.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-alarm" loop>
+        <source src="alarm.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
