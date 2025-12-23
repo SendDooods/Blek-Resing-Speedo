@@ -129,7 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Red blinking for 0-9%
             fuelIcon.classList.add('fuel-low');
         }
-        engineIcon.style.opacity = '1';
+
+        fuelIcon.style.opacity = '1';
     };
 
     // Function to change speedometer background color and opacity
