@@ -137,53 +137,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateEngineIcon = () => {
         const engineIcon = els.icons.engine;
         if (!engineIcon) return;
+        const image = engineIcon.querySelector('image');
+        if (!image) return;
 
         // Remove all engine-specific classes
         engineIcon.classList.remove('engine-warning', 'engine-critical');
 
         if (!vehicleState.engineOn) {
-            // Engine off: 10% opacity, greyed out
-            engineIcon.classList.remove('active');
+            // Engine off: grey
+            image.setAttribute('filter', 'url(#engineFilterGrey)');
+            engineIcon.style.opacity = '0.3';
             return;
         }
 
-        // Engine on: 50% opacity
-        engineIcon.classList.add('active');
-
-        // Check health levels for blinking
+        // Engine on: full opacity, color based on health
+        engineIcon.style.opacity = '1';
         const healthPercentage = vehicleState.engineHealth * 100;
         
-        if (healthPercentage <= 40) {
-            // Critical health: blink red
+        if (healthPercentage >= 75) {
+            // Green for 75% and above (healthy)
+            image.setAttribute('filter', 'url(#engineFilterGreen)');
+        } else if (healthPercentage >= 20) {
+            // Yellow for 20-74% (warning)
+            image.setAttribute('filter', 'url(#engineFilterYellow)');
+            if (healthPercentage <= 40) {
+                // Add blinking for critical levels
+                engineIcon.classList.add('engine-critical');
+            } else if (healthPercentage <= 70) {
+                // Add blinking for warning levels
+                engineIcon.classList.add('engine-warning');
+            }
+        } else {
+            // Red for under 20% (critical)
+            image.setAttribute('filter', 'url(#engineFilterRed)');
             engineIcon.classList.add('engine-critical');
-        } else if (healthPercentage <= 70) {
-            // Warning health: blink yellow
-            engineIcon.classList.add('engine-warning');
         }
-        // Above 70%: normal state (no blinking)
     };
 
     const updateFuelIcon = (fuelPercentage) => {
         const fuelIcon = els.icons.fuel;
         if (!fuelIcon) return;
+        const image = fuelIcon.querySelector('image');
+        if (!image) return;
 
         // Remove all fuel-specific classes
         fuelIcon.classList.remove('fuel-high', 'fuel-medium', 'fuel-low');
 
         if (!vehicleState.engineOn) {
             // Engine off: greyed out
+            image.setAttribute('filter', 'url(#fuelFilterGrey)');
+            fuelIcon.style.opacity = '0.3';
             return;
         }
 
         // Engine on: show fuel level colors
+        fuelIcon.style.opacity = '1';
         if (fuelPercentage >= 50) {
             // Green for 50% and above
-            fuelIcon.classList.add('fuel-high');
+            image.setAttribute('filter', 'url(#fuelFilterHigh)');
         } else if (fuelPercentage >= 10) {
             // Yellow for 10-49%
-            fuelIcon.classList.add('fuel-medium');
+            image.setAttribute('filter', 'url(#fuelFilterMedium)');
         } else {
             // Red blinking for 0-9%
+            image.setAttribute('filter', 'url(#fuelFilterLow)');
             fuelIcon.classList.add('fuel-low');
         }
     };
@@ -509,20 +526,32 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!lowBeam || !highBeam) return;
         
+        const lowBeamImage = lowBeam.querySelector('image');
+        const highBeamImage = highBeam.querySelector('image');
+        
+        if (!lowBeamImage || !highBeamImage) return;
+        
         // Remove all classes first
         lowBeam.classList.remove('active', 'hidden');
         highBeam.classList.remove('active', 'hidden');
         
         if (level === 1) {
             // Low beam active, hide high beam
-            lowBeam.classList.add('active');
-            highBeam.classList.add('hidden');
+            lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterActive)');
+            lowBeam.style.opacity = '1';
+            highBeam.style.opacity = '0';
         } else if (level === 2) {
             // High beam active, hide low beam
-            highBeam.classList.add('active');
-            lowBeam.classList.add('hidden');
+            highBeamImage.setAttribute('filter', 'url(#highBeamFilterActive)');
+            highBeam.style.opacity = '1';
+            lowBeam.style.opacity = '0';
+        } else {
+            // Both inactive (greyed out)
+            lowBeamImage.setAttribute('filter', 'url(#lowBeamFilterGrey)');
+            highBeamImage.setAttribute('filter', 'url(#highBeamFilterGrey)');
+            lowBeam.style.opacity = '0.3';
+            highBeam.style.opacity = '0.3';
         }
-        // level === 0: both icons stay inactive (greyed out)
     };
 
     const updateIndicators = () => {
