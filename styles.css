@@ -257,7 +257,7 @@ body {
 
 .rpm-box {
     width: 160px;
-    height: 30px;
+    height: 10px;
     background: rgba(255, 255, 255, 0);
     border: 2px solid rgba(255, 255, 255, 1);
     border-radius: 8px;
@@ -268,20 +268,30 @@ body {
     font-family: 'New X Digital TFB', monospace;
     font-size: 0;
     color: transparent;
+    position: relative;
+    overflow: hidden;
 }
 
-.rpm-box.on {
+.rpm-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--fill-width, 0%);
     background: #00ff41;
-    box-shadow: 0 0 15px rgba(0, 255, 65, 0);
-    border-color: #00ff41;
-    color: transparent;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 6px;
 }
 
-.rpm-box.redline {
+.rpm-box.on::before {
+    background: #00ff41;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+
+.rpm-box.redline::before {
     background: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
-    border-color: #ff0000;
-    color: transparent;
 }
 
 /* Status icons */

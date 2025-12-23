@@ -235,11 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.setRPM = (rpm) => {
             const rpmValue = Math.round(Math.max(0, Math.min(1, rpm)) * 8000); // Scale to 0-8000 RPM
+            const rpmPercentage = Math.max(0, Math.min(100, rpm * 100)); // Convert to 0-100%
             const isActive = rpm > 0.1; // Active when RPM is above 10%
             const isRedline = rpm > 0.8; // Red when RPM is above 80% (near gear change)
             
             // Remove all classes first
             box.classList.remove('on', 'redline');
+            
+            // Set the fill width based on RPM percentage
+            box.style.setProperty('--rpm-fill', rpmPercentage + '%');
             
             if (isActive) {
                 if (isRedline) {
@@ -251,6 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 box.textContent = '';
             }
+            
+            // Update the ::before element width
+            const beforeElement = window.getComputedStyle(box, '::before');
+            box.style.setProperty('--fill-width', rpmPercentage + '%');
         };
     } else {
         window.setRPM = () => { };
@@ -420,6 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Set bars to 0% when engine is off
             window.setHealth(0);
             window.setFuel(0);
+            window.setRPM(0);
         } else {
             window.setGear(0);
 
@@ -506,4 +515,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize bars to 0% since engine starts as off
     window.setHealth(0);
     window.setFuel(0);
+    window.setRPM(0);
 });
