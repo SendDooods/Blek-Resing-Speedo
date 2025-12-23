@@ -361,16 +361,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Engine off = transparent
             root.style.setProperty('--fuel-color', 'transparent');
             root.style.setProperty('--fuel-glow', 'rgba(0, 0, 0, 0)');
-        } else if (percentage >= 60) {
-            // Green for 60% and above
+        } else if (percentage >= 50) {
+            // Green for 50% and above
             root.style.setProperty('--fuel-color', '#44ff44');
             root.style.setProperty('--fuel-glow', 'rgba(68, 255, 68, 0.5)');
-        } else if (percentage >= 40) {
-            // Yellow for 40-59%
+        } else if (percentage >= 20) {
+            // Yellow for 20-49%
             root.style.setProperty('--fuel-color', '#ffff00');
             root.style.setProperty('--fuel-glow', 'rgba(255, 255, 0, 0.5)');
         } else {
-            // Red for under 40%
+            // Red for under 20%
             root.style.setProperty('--fuel-color', '#ff0000');
             root.style.setProperty('--fuel-glow', 'rgba(255, 0, 0, 0.5)');
         }
@@ -400,16 +400,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Engine off = transparent
             root.style.setProperty('--health-color', 'transparent');
             root.style.setProperty('--health-glow', 'rgba(0, 0, 0, 0)');
-        } else if (percentage >= 60) {
-            // Green for 60% and above
+        } else if (percentage >= 50) {
+            // Green for 50% and above
             root.style.setProperty('--health-color', '#00ff00');
             root.style.setProperty('--health-glow', 'rgba(0, 255, 0, 0.5)');
-        } else if (percentage >= 40) {
-            // Yellow for 40-59%
+        } else if (percentage >= 20) {
+            // Yellow for 20-49%
             root.style.setProperty('--health-color', '#ffff00');
             root.style.setProperty('--health-glow', 'rgba(255, 255, 0, 0.5)');
         } else {
-            // Red for under 40%
+            // Red for under 20%
             root.style.setProperty('--health-color', '#ff0000');
             root.style.setProperty('--health-glow', 'rgba(255, 0, 0, 0.5)');
         }
