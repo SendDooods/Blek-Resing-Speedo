@@ -2,7 +2,7 @@
 
 :root {
     --speedo-bg-color: 0, 0, 0;
-    --speedo-bg-opacity: 0;
+    --speedo-bg-opacity: 1;
     --speed-color: #ffffff;
     --speed-glow: rgba(255, 255, 255, 1);
     --health-color: #00ff00;
@@ -43,7 +43,7 @@ body {
     width: 100vw;
     height: 100vh;
     background: rgba(var(--speedo-bg-color), var(--speedo-bg-opacity));
-    display: flex;
+    display: fixed;
     justify-content: space-between;
     align-items: flex-start;
     padding: 20px;
@@ -54,7 +54,7 @@ body {
     position: fixed;
     bottom: 81px;
     right: 50px;
-    display: flex;
+    display: fixed;
     flex-direction: column;
     align-items: center;
     z-index: 100;
@@ -71,6 +71,9 @@ body {
     min-width: 120px;
     position: absolute;
     text-align: center;
+    bottom:auto;
+    right: -42px;
+    left: auto;
 }
 
 .speed-unit {
