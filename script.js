@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const vehicleState = {
         engineOn: false,
         hasMoved: false,
-        isMotorcycle: true,
+        isMotorcycle: false,
         engineHealth: 1.0,
         storedHealthValue: 1.0,
         storedFuelValue: 1.0,
