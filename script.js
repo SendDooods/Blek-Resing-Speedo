@@ -19,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         audio: {
             tick: document.getElementById('audio-tick'),
-            alarm: document.getElementById('audio-alarm')
+            alarm: document.getElementById('audio-alarm'),
+            seatbeltWarning: document.getElementById('audio-seatbelt-warning'),
+            engineWarn1: document.getElementById('audio-engine-warn1'),
+            engineWarn2: document.getElementById('audio-engine-warn2'),
+            fuelWarn50: document.getElementById('audio-fuel-50'),
+            fuelWarn10: document.getElementById('audio-fuel-10')
         }
     };
 
@@ -27,12 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
         engineOn: false,
         hasMoved: false,
         isMotorcycle: true,
-        engineHealth: 1.0
+        engineHealth: 1.0,
+        hasPlayedWarn1: false,
+        hasPlayedWarn2: false,
+        hasPlayedFuel50: false,
+        hasPlayedFuel10: false
     };
 
     const manageLoopingAudio = (audioEl, shouldPlay) => {
-        // Audio disabled - function does nothing
-        return;
+        if (!audioEl) return;
+
+        if (shouldPlay) {
+            if (audioEl.paused) {
+                audioEl.currentTime = 0;
+                audioEl.play().catch(e => console.log('Audio play failed:', e));
+            }
+        } else {
+            if (!audioEl.paused) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
+            }
+        }
+    };
+
+    const playOnceAudio = (audioEl) => {
+        if (!audioEl) return;
+        audioEl.currentTime = 0;
+        audioEl.play().catch(e => console.log('Audio play failed:', e));
     };
 
     const toggleIcon = (id, state) => {
@@ -80,6 +106,25 @@ document.addEventListener('DOMContentLoaded', () => {
         engineIcon.style.opacity = '1';
         const healthPercentage = vehicleState.engineHealth * 100;
 
+        // Check for warning sounds (play once when crossing thresholds)
+        if (healthPercentage <= 50 && !vehicleState.hasPlayedWarn1) {
+            playOnceAudio(els.audio.engineWarn1);
+            vehicleState.hasPlayedWarn1 = true;
+        }
+
+        if (healthPercentage <= 20 && !vehicleState.hasPlayedWarn2) {
+            playOnceAudio(els.audio.engineWarn2);
+            vehicleState.hasPlayedWarn2 = true;
+        }
+
+        // Reset warning flags if health improves
+        if (healthPercentage > 50) {
+            vehicleState.hasPlayedWarn1 = false;
+        }
+        if (healthPercentage > 20) {
+            vehicleState.hasPlayedWarn2 = false;
+        }
+
         if (healthPercentage === 100) {
             // Green for exactly 100% health
             image.setAttribute('filter', 'url(#engineFilterGreen)');
@@ -105,6 +150,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!vehicleState.engineOn) {
             // Engine off: greyed out
             return;
+        }
+
+        // Check for fuel warning sounds (play once when crossing thresholds)
+        if (fuelPercentage <= 50 && !vehicleState.hasPlayedFuel50) {
+            playOnceAudio(els.audio.fuelWarn50);
+            vehicleState.hasPlayedFuel50 = true;
+        }
+
+        if (fuelPercentage <= 10 && !vehicleState.hasPlayedFuel10) {
+            playOnceAudio(els.audio.fuelWarn10);
+            vehicleState.hasPlayedFuel10 = true;
+        }
+
+        // Reset warning flags if fuel improves
+        if (fuelPercentage > 50) {
+            vehicleState.hasPlayedFuel50 = false;
+        }
+        if (fuelPercentage > 10) {
+            vehicleState.hasPlayedFuel10 = false;
         }
 
         // Engine on: show fuel level colors
@@ -179,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (vehicleState.isMotorcycle) {
                 els.icons.seatbelt.style.display = 'none';
                 manageLoopingAudio(els.audio.alarm, false); // Disable alarm for motorcycles
+                manageLoopingAudio(els.audio.seatbeltWarning, false); // Disable seatbelt warning for motorcycles
             } else {
                 els.icons.seatbelt.style.display = '';
             }
@@ -343,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.setSeatbelts = (isBuckled) => {
         if (vehicleState.isMotorcycle) {
             manageLoopingAudio(els.audio.alarm, false);
+            manageLoopingAudio(els.audio.seatbeltWarning, false);
             return;
         }
 
@@ -370,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const shouldPlayAlarm = !isWearingBelt && vehicleState.engineOn;
         manageLoopingAudio(els.audio.alarm, shouldPlayAlarm);
+        manageLoopingAudio(els.audio.seatbeltWarning, shouldPlayAlarm);
     };
 
     window.setEngine = (on) => {
@@ -382,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vehicleState.hasMoved = false;
             window.setGear('N');
             manageLoopingAudio(els.audio.alarm, false);
+            manageLoopingAudio(els.audio.seatbeltWarning, false);
 
             // Set bars to 0% when engine is off
             window.setHealth(0);
@@ -399,6 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 els.icons.seatbelt && els.icons.seatbelt.classList.contains('active');
             if (!isSeatbeltIconActive) {
                 manageLoopingAudio(els.audio.alarm, true);
+                manageLoopingAudio(els.audio.seatbeltWarning, true);
             }
         }
 
