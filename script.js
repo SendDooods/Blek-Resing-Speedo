@@ -63,8 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.style.opacity = '1';
                 icon.classList.add('active');
             } else {
-                // Inactive: original colors with full opacity
-                image.setAttribute('filter', 'none');
+                // Inactive: grey when engine on, original when engine off
+                if (vehicleState.engineOn) {
+                    image.setAttribute('filter', `url(#${id}FilterGrey)`);
+                } else {
+                    image.setAttribute('filter', 'none');
+                }
                 icon.style.opacity = '1';
                 icon.classList.remove('active');
             }
@@ -93,17 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Engine on: color based on health
         const healthPercentage = vehicleState.engineHealth * 100;
 
-        if (healthPercentage === 100) {
-            // Green for exactly 100% health
+        if (healthPercentage >= 50) {
+            // Green for 50-100% health
             image.setAttribute('filter', 'url(#engineFilterGreen)');
-        } else if (healthPercentage >= 50) {
-            // Yellow for 50-99% health
-            image.setAttribute('filter', 'url(#engineFilterYellow)');
-        } else if (healthPercentage >= 20) {
-            // Yellow for 20-49% health (same as above)
+        } else if (healthPercentage >= 25) {
+            // Yellow for 25-49% health
             image.setAttribute('filter', 'url(#engineFilterYellow)');
         } else {
-            // Red for 0-19% health
+            // Red for 0-24% health
             image.setAttribute('filter', 'url(#engineFilterRed)');
         }
     };
@@ -126,18 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Engine on: show fuel level colors using SVG filters
         if (fuelPercentage >= 50) {
-            // Green for 50% and above
+            // Green for 50-100%
             image.setAttribute('filter', 'url(#fuelFilterHigh)');
-        } else if (fuelPercentage >= 10) {
-            // Yellow for 10-49%
+        } else if (fuelPercentage >= 25) {
+            // Yellow for 25-49%
             image.setAttribute('filter', 'url(#fuelFilterMedium)');
         } else {
-            // Red blinking for 0-9%
+            // Red for 0-24%
             image.setAttribute('filter', 'url(#fuelFilterLow)');
             fuelIcon.classList.add('fuel-low');
         }
-
-
     };
 
     // Function to change speedometer background color and opacity
@@ -309,16 +308,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Engine off = transparent
             root.style.setProperty('--fuel-color', 'transparent');
             root.style.setProperty('--fuel-glow', 'rgba(0, 0, 0, 0)');
-        } else if (percentage >= 60) {
-            // Green for 60% and above
-            root.style.setProperty('--fuel-color', '#44ff44');
-            root.style.setProperty('--fuel-glow', 'rgba(68, 255, 68, 0.5)');
-        } else if (percentage >= 40) {
-            // Yellow for 40-59%
+        } else if (percentage >= 50) {
+            // Green for 50-100%
+            root.style.setProperty('--fuel-color', '#00ff00');
+            root.style.setProperty('--fuel-glow', 'rgba(0, 255, 0, 0.5)');
+        } else if (percentage >= 25) {
+            // Yellow for 25-49%
             root.style.setProperty('--fuel-color', '#ffff00');
             root.style.setProperty('--fuel-glow', 'rgba(255, 255, 0, 0.5)');
         } else {
-            // Red for under 40%
+            // Red for 0-24%
             root.style.setProperty('--fuel-color', '#ff0000');
             root.style.setProperty('--fuel-glow', 'rgba(255, 0, 0, 0.5)');
         }
@@ -347,16 +346,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Engine off = transparent
             root.style.setProperty('--health-color', 'transparent');
             root.style.setProperty('--health-glow', 'rgba(0, 0, 0, 0)');
-        } else if (percentage >= 60) {
-            // Green for 60% and above
+        } else if (percentage >= 50) {
+            // Green for 50-100%
             root.style.setProperty('--health-color', '#00ff00');
             root.style.setProperty('--health-glow', 'rgba(0, 255, 0, 0.5)');
-        } else if (percentage >= 40) {
-            // Yellow for 40-59%
+        } else if (percentage >= 25) {
+            // Yellow for 25-49%
             root.style.setProperty('--health-color', '#ffff00');
             root.style.setProperty('--health-glow', 'rgba(255, 255, 0, 0.5)');
         } else {
-            // Red for under 40%
+            // Red for 0-24%
             root.style.setProperty('--health-color', '#ff0000');
             root.style.setProperty('--health-glow', 'rgba(255, 0, 0, 0.5)');
         }
@@ -432,6 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update engine icon
         updateEngineIcon();
+
+        // Update indicator icons based on engine state
+        const leftActive = els.icons.left && els.icons.left.classList.contains('active');
+        const rightActive = els.icons.right && els.icons.right.classList.contains('active');
+        toggleIcon('left', leftActive);
+        toggleIcon('right', rightActive);
 
         // Update speed color when engine state changes
         const currentSpeed = els.speed ? parseInt(els.speed.textContent) || 0 : 0;
