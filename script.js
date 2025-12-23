@@ -144,12 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const healthPercentage = vehicleState.engineHealth * 100;
 
         // Check for warning sounds (play once when crossing thresholds)
-        if (healthPercentage <= 50 && !vehicleState.hasPlayedWarn1) {
+        // Only play if seatbelt is buckled (to avoid overlapping with seatbelt warnings)
+        if (healthPercentage <= 50 && !vehicleState.hasPlayedWarn1 && vehicleState.seatbeltBuckled) {
             playOnceAudio(els.audio.engineWarn1);
             vehicleState.hasPlayedWarn1 = true;
         }
 
-        if (healthPercentage <= 20 && !vehicleState.hasPlayedWarn2) {
+        if (healthPercentage <= 20 && !vehicleState.hasPlayedWarn2 && vehicleState.seatbeltBuckled) {
             playOnceAudio(els.audio.engineWarn2);
             vehicleState.hasPlayedWarn2 = true;
         }
@@ -194,12 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
         fuelIcon.style.opacity = '1';
 
         // Check for fuel warning sounds (play once when crossing thresholds)
-        if (fuelPercentage <= 50 && !vehicleState.hasPlayedFuel50) {
+        // Only play if seatbelt is buckled (to avoid overlapping with seatbelt warnings)
+        if (fuelPercentage <= 50 && !vehicleState.hasPlayedFuel50 && vehicleState.seatbeltBuckled) {
             playOnceAudio(els.audio.fuelWarn50);
             vehicleState.hasPlayedFuel50 = true;
         }
 
-        if (fuelPercentage <= 10 && !vehicleState.hasPlayedFuel10) {
+        if (fuelPercentage <= 10 && !vehicleState.hasPlayedFuel10 && vehicleState.seatbeltBuckled) {
             playOnceAudio(els.audio.fuelWarn10);
             vehicleState.hasPlayedFuel10 = true;
         }

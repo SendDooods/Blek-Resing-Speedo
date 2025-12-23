@@ -62,7 +62,7 @@ body {
 
 .speed-display {
     font-family: 'New X Digital TFB', monospace;
-    font-size: 4rem;
+    font-size: 2rem;
     font-weight: bold;
     color: var(--speed-color);
     text-shadow: 0 0 20px var(--speed-glow);
@@ -71,7 +71,7 @@ body {
     min-width: 120px;
     position: absolute;
     text-align: center;
-    bottom: auto;
+    bottom: -20px;
     right: -42px;
     left: auto;
 }
