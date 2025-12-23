@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
             left: document.getElementById('icon-left'),
             right: document.getElementById('icon-right'),
             seatbelt: document.getElementById('icon-seatbelt')
+        },
+        audio: {
+            tick: document.getElementById('audio-tick'),
+            seatbeltWarning: document.getElementById('audio-seatbelt-warning')
         }
     };
 
@@ -24,6 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
         hasMoved: false,
         isMotorcycle: true,
         engineHealth: 1.0
+    };
+
+    const manageLoopingAudio = (audioEl, shouldPlay) => {
+        if (!audioEl) return;
+
+        if (shouldPlay) {
+            if (audioEl.paused) {
+                audioEl.currentTime = 0;
+                audioEl.play().catch(e => console.log('Audio play failed:', e));
+            }
+        } else {
+            if (!audioEl.paused) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
+            }
+        }
     };
 
 
@@ -170,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (els.icons.seatbelt) {
             if (vehicleState.isMotorcycle) {
                 els.icons.seatbelt.style.display = 'none';
+                manageLoopingAudio(els.audio.seatbeltWarning, false); // Disable seatbelt warning for motorcycles
             } else {
                 els.icons.seatbelt.style.display = '';
             }
@@ -333,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.setSeatbelts = (isBuckled) => {
         if (vehicleState.isMotorcycle) {
+            manageLoopingAudio(els.audio.seatbeltWarning, false);
             return;
         }
 
@@ -357,6 +379,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+
+        const shouldPlaySeatbeltWarning = !isWearingBelt && vehicleState.engineOn;
+        manageLoopingAudio(els.audio.seatbeltWarning, shouldPlaySeatbeltWarning);
     };
 
     window.setEngine = (on) => {
@@ -368,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!newState) {
             vehicleState.hasMoved = false;
             window.setGear('N');
+            manageLoopingAudio(els.audio.seatbeltWarning, false);
 
             // Set bars to 0% when engine is off
             window.setHealth(0);
@@ -375,6 +401,16 @@ document.addEventListener('DOMContentLoaded', () => {
             window.setRPM(0);
         } else {
             window.setGear(0);
+
+            if (vehicleState.isMotorcycle) {
+                manageLoopingAudio(els.audio.seatbeltWarning, false);
+            } else {
+                const isSeatbeltIconActive =
+                    els.icons.seatbelt && els.icons.seatbelt.classList.contains('active');
+                if (!isSeatbeltIconActive) {
+                    manageLoopingAudio(els.audio.seatbeltWarning, true);
+                }
+            }
         }
 
         // Update engine icon
@@ -452,6 +488,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (rightActive) {
             els.icons.right.classList.add('is-blinking');
         }
+
+        manageLoopingAudio(els.audio.tick, leftActive || rightActive);
     };
 
     window.setLeftIndicator = (on) => {
