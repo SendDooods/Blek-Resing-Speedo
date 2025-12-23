@@ -395,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         image.setAttribute('filter', 'url(#seatbeltFilterActive)');
                     } else {
                         // Not buckled: red flashing
+                        seatbeltIcon.style.opacity = '1';
                         image.setAttribute('filter', 'url(#seatbeltFilterWarning)');
                         seatbeltIcon.classList.add('seatbelt-warning');
                     }
