@@ -71,7 +71,7 @@ body {
     min-width: 120px;
     position: absolute;
     text-align: center;
-    bottom:auto;
+    bottom: auto;
     right: -42px;
     left: auto;
 }
@@ -319,8 +319,11 @@ body {
 
 .icon {
     font-size: 1.5rem;
-    opacity: 0.3;
+    opacity: 1;
     transition: all 0.3s ease;
+    width: 24px;
+    height: 24px;
+    display: block;
 }
 
 .icon.active {
