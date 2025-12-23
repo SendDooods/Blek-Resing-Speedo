@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!vehicleState.engineOn) {
             // Engine off: greyed out
             image.setAttribute('filter', 'url(#fuelFilterGrey)');
+            fuelIcon.style.opacity = '1';
             return;
         }
 
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fuelIcon.classList.add('fuel-low');
         }
 
-        fuelIcon.style.opacity = '1';
+        
     };
 
     // Function to change speedometer background color and opacity
