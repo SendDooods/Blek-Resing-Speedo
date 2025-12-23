@@ -2,7 +2,7 @@
 
 :root {
     --speedo-bg-color: 0, 0, 0;
-    --speedo-bg-opacity: 1;
+    --speedo-bg-opacity: 0;
     --speed-color: #ffffff;
     --speed-glow: rgba(255, 255, 255, 1);
     --health-color: #00ff00;
@@ -312,7 +312,7 @@ body {
     user-select: none;
     position: fixed;
     bottom: 40px;
-    right: 170px;
+    right: 173px;
     z-index: 50;
     object-fit: contain;
     object-position: center;
